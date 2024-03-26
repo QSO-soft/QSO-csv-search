@@ -15,4 +15,4 @@ xlsx
 **/logs/
 
 src/data/**/*[!.example].csv
-
+src/data/**/to-update.csv

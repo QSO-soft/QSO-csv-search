@@ -52,6 +52,9 @@ npm run prepare-files
 10. Заполняем [src/data/input.csv](src/data/input.csv) файл с любой датой, с которой будет производиться поиск, при этом первую строку (хедера) так-же можно заменить на желаемые
 11. Заполняем [src/data/search.csv](src/data/search.csv) файл с полями и значениями, которые будут найдены в `input.csv`, при этом `field_to_search` можно оставлять пустыми, кроме самого первого значение, тогда поле будет браться именно с него ([Пример](src/data/search.example.csv))
 
-12. npm start
+12. Заполняем [src/data/settings.ts](src/data/settings.ts)
+12.1. При необходимости заполняем [src/data/to-update.csv](src/data/to-update.csv) файл со значениями, которые необходимо обновить в `input.csv`
 
-13. Смотрим результат в [src/data/output.csv](src/data/output.csv)
+13. npm start
+
+14. Смотрим результат в [src/data/output.csv](src/data/output.csv)

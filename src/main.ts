@@ -1,5 +1,6 @@
 import { sep } from 'path';
 
+import { SETTINGS } from './data/settings';
 import { convertAndWriteToJSON, convertToCsvAndWrite, DataForCsv, getDirname } from './helpers';
 import { Logger } from './logger';
 import { buildFolderName } from './logger/utils';
@@ -38,7 +39,7 @@ const buildInputPath = () => {
     logger,
   })) as Search[];
 
-  const res = search.reduce<object[]>((acc, cur, currentIndex) => {
+  let foundResults = search.reduce<(Search & object)[]>((acc, cur, currentIndex) => {
     let searchField = cur.field_to_search;
 
     if (!searchField) {
@@ -74,11 +75,51 @@ const buildInputPath = () => {
     return [...acc, searchObj];
   }, []);
 
+  if (SETTINGS.withUpdate && foundResults.length) {
+    const toUpdate = await convertAndWriteToJSON({
+      inputPath: buildInputPath() + 'to-update.csv',
+      logger,
+    });
+
+    let toSave = input;
+    foundResults = foundResults.reduce<(Search & object)[]>((acc, cur) => {
+      const { field_to_search, value_to_search } = cur;
+
+      const foundToUpdate = toUpdate.find((row) => {
+        const rowField = row[field_to_search as keyof typeof row];
+        return field_to_search in row && rowField && rowField === value_to_search;
+      });
+      const restInputs = toSave.filter((row) => {
+        const rowField = row[field_to_search as keyof typeof row];
+        return field_to_search in row && rowField && rowField !== value_to_search;
+      });
+
+      if (foundToUpdate) {
+        toSave = [...restInputs, foundToUpdate];
+        const updated = {
+          ...cur,
+          ...foundToUpdate,
+        };
+
+        return [...acc, updated];
+      }
+
+      return [...acc, cur];
+    }, []);
+
+    convertToCsvAndWrite({
+      data: toSave as DataForCsv,
+      fileName: 'input.csv',
+      outputPath: buildInputPath(),
+    });
+
+    logger.success('src/data/input.csv was updated', { status: 'succeeded' });
+  }
   convertToCsvAndWrite({
-    data: res as DataForCsv,
+    data: foundResults as DataForCsv,
     fileName: 'output.csv',
     outputPath: buildInputPath(),
   });
 
-  logger.success('Results saved to src/data/output.csv', { status: 'succeeded' });
+  logger.success('Found results saved to src/data/output.csv', { status: 'succeeded' });
 })();

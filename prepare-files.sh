@@ -1,7 +1,13 @@
 if [ ! -s src/data/input.csv ]
   then :
     echo "\nCreating input.csv in src/data/"
-    touch src/data/input.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key" >> src/data/input.csv
+    touch src/data/input.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora" >> src/data/input.csv
+fi
+
+if [ ! -s src/data/to-update.csv ]
+  then :
+    echo "\nCreating to-update.csv in src/data/"
+    touch src/data/to-update.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora" >> src/data/to-update.csv
 fi
 
 if [ ! -s src/data/output.csv ]
