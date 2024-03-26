@@ -6,9 +6,9 @@
 1. Установить [VisualStudio Code](https://code.visualstudio.com/) или Sublime Text или любую другую IDE
 
 2. Установка node, npm, git
-2.1. Устанавливаем Node +, если версия ниже 20й - https://nodejs.org/en/download, либо - https://github.com/coreybutler/nvm-windows
-2.2. Устанавливаем Git, если еще не установлен - https://gitforwindows.org/ (всё по умолчанию выбирайте)
-2.3. Устанавливаем его глобально
+: 2.1. Устанавливаем Node +, если версия ниже 20й - https://nodejs.org/en/download, либо - https://github.com/coreybutler/nvm-windows
+: 2.2. Устанавливаем Git, если еще не установлен - https://gitforwindows.org/ (всё по умолчанию выбирайте)
+: 2.3. Устанавливаем его глобально
 ```bash
 npm install npm -g
 npm install typescript -g
@@ -53,7 +53,7 @@ npm run prepare-files
 11. Заполняем [src/data/search.csv](src/data/search.csv) файл с полями и значениями, которые будут найдены в `input.csv`, при этом `field_to_search` можно оставлять пустыми, кроме самого первого значение, тогда поле будет браться именно с него ([Пример](src/data/search.example.csv))
 
 12. Заполняем [src/data/settings.ts](src/data/settings.ts)
-12.1. При необходимости заполняем [src/data/to-update.csv](src/data/to-update.csv) файл со значениями, которые необходимо обновить в `input.csv`
+: 12.1. При необходимости заполняем [src/data/to-update.csv](src/data/to-update.csv) файл со значениями, которые необходимо обновить в `input.csv`
 
 13. npm start
 
