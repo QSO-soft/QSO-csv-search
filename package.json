@@ -1,0 +1,62 @@
+{
+  "name": "QSO-soft",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "engines": {
+    "node": "20.8.1",
+    "npm": "10.1.0"
+  },
+  "scripts": {
+    "==================== MAIN": "====================",
+    "start": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/main.ts",
+    "build": "rimraf ./dist && tsc",
+    "prepare-files": "sh prepare-files.sh",
+    "==================== DEV": "====================",
+    "dev": "tsc --watch",
+    "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",
+    "prepare": "husky install",
+    "prettier": "prettier 'src/**/*' --write",
+    "check-ts": "tsc src/**/*.ts --noEmit",
+    "lint": "eslint 'src/**/*'",
+    "lint:fix": "eslint 'src/**/*' --fix"
+  },
+  "author": "QSO-soft",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "1.6.7",
+    "csvtojson": "2.0.10",
+    "dayjs": "1.11.10",
+    "lodash": "^4.17.21",
+    "ts-node": "10.9.1",
+    "winston": "3.10.0",
+    "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "18.17.1",
+    "@typescript-eslint/eslint-plugin": "6.3.0",
+    "@typescript-eslint/parser": "6.2.1",
+    "eslint": "8.46.0",
+    "eslint-config-prettier": "9.0.0",
+    "eslint-import-resolver-typescript": "2.7.1",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "husky": "8.0.3",
+    "lint-staged": "14.0.0",
+    "prettier": "3.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier 'src/**/*' --write",
+      "eslint 'src/**/*' --fix"
+    ]
+  }
+}
