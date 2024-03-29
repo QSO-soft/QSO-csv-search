@@ -6,7 +6,6 @@ import { Logger } from './logger';
 import { buildFolderName } from './logger/utils';
 
 interface Search {
-  field_to_search: string;
   value_to_search: string;
 }
 const buildFileName = (fileName: string) => {
@@ -39,73 +38,51 @@ const buildInputPath = () => {
     logger,
   })) as Search[];
 
-  let foundResults = search.reduce<(Search & object)[]>((acc, cur, currentIndex) => {
-    let searchField = cur.field_to_search;
+  const searchField = SETTINGS.fieldToSearch;
 
-    if (!searchField) {
-      const prevRes = acc[currentIndex - 1] || acc[0];
+  let foundRes: any[] = [];
+  const notFoundRes: any[] = [];
 
-      if (prevRes && 'field_to_search' in prevRes && prevRes.field_to_search) {
-        searchField = prevRes.field_to_search as string;
-      } else {
-        logger.error(`No search field for value ${cur.value_to_search}`, {
-          status: 'failed',
-        });
-        return acc;
-      }
+  for (const { value_to_search } of search) {
+    const foundInputs = input.filter(
+      (row) => (row[searchField as keyof typeof row] as string)?.toLowerCase() === value_to_search.toLowerCase()
+    );
+
+    if (foundInputs.length) {
+      foundRes.push(...foundInputs);
+    } else {
+      notFoundRes.push({
+        field_to_search: searchField,
+        value_to_search,
+      });
     }
+  }
 
-    const foundRes = input.filter((row) => {
-      const rowField = row[searchField as keyof typeof row];
-      return searchField in row && rowField && rowField === cur.value_to_search;
-    });
-
-    const searchObj = {
-      field_to_search: searchField,
-      value_to_search: cur.value_to_search,
-    };
-    if (foundRes.length) {
-      const transformedRes = foundRes.map((obj) => ({
-        ...searchObj,
-        ...obj,
-      }));
-      return [...acc, ...transformedRes];
-    }
-
-    return [...acc, searchObj];
-  }, []);
-
-  if (SETTINGS.withUpdate && foundResults.length) {
+  if (SETTINGS.withUpdate && foundRes.length) {
     const toUpdate = await convertAndWriteToJSON({
       inputPath: buildInputPath() + 'to-update.csv',
       logger,
     });
 
+    const updatedFoundRes = [];
     let toSave = input;
-    foundResults = foundResults.reduce<(Search & object)[]>((acc, cur) => {
-      const { field_to_search, value_to_search } = cur;
+    for (const row of foundRes) {
+      const field = (row[searchField as keyof typeof row] as string)?.toLowerCase();
 
-      const foundToUpdate = toUpdate.find((row) => {
-        const rowField = row[field_to_search as keyof typeof row];
-        return field_to_search in row && rowField && rowField === value_to_search;
-      });
-      const restInputs = toSave.filter((row) => {
-        const rowField = row[field_to_search as keyof typeof row];
-        return field_to_search in row && rowField && rowField !== value_to_search;
-      });
+      const foundInUpdate = toUpdate.find(
+        (row) => field === (row[searchField as keyof typeof row] as string)?.toLowerCase()
+      );
+      const restInputs = toSave.filter(
+        (row) => field !== (row[searchField as keyof typeof row] as string)?.toLowerCase()
+      );
 
-      if (foundToUpdate) {
-        toSave = [...restInputs, foundToUpdate];
-        const updated = {
-          ...cur,
-          ...foundToUpdate,
-        };
-
-        return [...acc, updated];
+      if (foundInUpdate) {
+        toSave = [...restInputs, foundInUpdate];
+        updatedFoundRes.push(foundInUpdate);
+      } else {
+        updatedFoundRes.push(row);
       }
-
-      return [...acc, cur];
-    }, []);
+    }
 
     convertToCsvAndWrite({
       data: toSave as DataForCsv,
@@ -114,12 +91,44 @@ const buildInputPath = () => {
     });
 
     logger.success('src/data/input.csv was updated', { status: 'succeeded' });
+
+    foundRes = updatedFoundRes;
   }
+
+  const duplicates: any[] = [];
+  const unique = foundRes.reduce<any[]>((acc, row) => {
+    const field = (row[searchField as keyof typeof row] as string).toLowerCase();
+
+    const isInAcc = acc.find((row) => (row[searchField as keyof typeof row] as string).toLowerCase() === field);
+    if (isInAcc) {
+      duplicates.push(row);
+      return acc;
+    } else {
+      return [...acc, row];
+    }
+  }, []);
+
   convertToCsvAndWrite({
-    data: foundResults as DataForCsv,
-    fileName: 'output.csv',
+    data: unique as DataForCsv,
+    fileName: 'found.csv',
     outputPath: buildInputPath(),
   });
 
-  logger.success('Found results saved to src/data/output.csv', { status: 'succeeded' });
+  logger.success('Found results saved to src/data/found.csv', { status: 'succeeded' });
+
+  convertToCsvAndWrite({
+    data: notFoundRes as unknown as DataForCsv,
+    fileName: 'not-found.csv',
+    outputPath: buildInputPath(),
+  });
+
+  logger.success('Not found results saved to src/data/not-found.csv', { status: 'succeeded' });
+
+  convertToCsvAndWrite({
+    data: duplicates as DataForCsv,
+    fileName: 'duplicates.csv',
+    outputPath: buildInputPath(),
+  });
+
+  logger.success('Duplicated results saved to src/data/duplicates.csv', { status: 'succeeded' });
 })();
