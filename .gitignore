@@ -14,5 +14,6 @@ file
 xlsx
 **/logs/
 
-src/data/**/*[!.example].csv
-src/data/**/to-update.csv
+src/_inputs/**/*[!.example].csv
+src/_inputs/**/to-update.csv
+src/_outputs/**/*[!.example].csv

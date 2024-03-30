@@ -1,3 +1,5 @@
+import { sep } from 'path';
+
 import dayjs from 'dayjs';
 import { TransformableInfo } from 'logform';
 import winston from 'winston';
@@ -69,9 +71,9 @@ export const initLogger = () =>
     ],
   });
 
-export const buildFolderName = (loggerPath: string) => {
+export const buildFolderName = (projectName: string) => {
   const formattedTime = dayjs().format('HH-mm');
   const formattedDate = dayjs().format('DD-MM-YY');
 
-  return `${loggerPath}/${formattedDate}_${formattedTime}`;
+  return `..${sep}_outputs${sep}logs${sep}${projectName}${sep}${formattedDate}_${formattedTime}`;
 };

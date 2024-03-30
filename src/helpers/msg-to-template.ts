@@ -1,4 +1,7 @@
-import { LoggerData } from '../logger';
+import path, { sep } from 'path';
+
+import { Logger, LoggerData } from '../logger';
+import { getDirname } from './get-dirname';
 
 export interface TemplateData extends LoggerData {
   moduleName?: string;
@@ -32,3 +35,14 @@ export const assert = (condition: boolean, message?: string): void => {
     throw new Error(`Assertion failed: ${message || 'Unknown error'}`);
   }
 };
+
+export const buildLogFileName = (fileName: string) => {
+  return `${fileName}.log`;
+};
+
+export const buildCsvPath = (isOutput: boolean = false) => {
+  return path.join(getDirname(), '..', isOutput ? '_outputs' : '_inputs', 'csv', sep);
+};
+
+export const initLocalLogger = (folderName: string, fileName: string) =>
+  new Logger(folderName, buildLogFileName(fileName));

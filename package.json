@@ -9,7 +9,7 @@
   },
   "scripts": {
     "==================== MAIN": "====================",
-    "start": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/main.ts",
+    "start": "node src/runner.js",
     "build": "rimraf ./dist && tsc",
     "prepare-files": "sh prepare-files.sh",
     "==================== DEV": "====================",
@@ -19,7 +19,10 @@
     "prettier": "prettier 'src/**/*' --write",
     "check-ts": "tsc src/**/*.ts --noEmit",
     "lint": "eslint 'src/**/*'",
-    "lint:fix": "eslint 'src/**/*' --fix"
+    "lint:fix": "eslint 'src/**/*' --fix",
+    "==================== SCRIPTS": "====================",
+    "search": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/scripts/search.ts",
+    "update": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/scripts/update.ts"
   },
   "author": "QSO-soft",
   "license": "ISC",
@@ -27,10 +30,11 @@
     "axios": "1.6.7",
     "csvtojson": "2.0.10",
     "dayjs": "1.11.10",
+    "inquirer": "^9.2.17",
     "lodash": "^4.17.21",
     "ts-node": "10.9.1",
-    "winston": "3.10.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "winston": "3.10.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.202",

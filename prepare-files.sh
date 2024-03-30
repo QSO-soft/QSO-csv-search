@@ -1,34 +1,46 @@
-if [ ! -s src/data/input.csv ]
+# INPUTS =================================================================
+if [ ! -s src/_inputs/csv/input.csv ]
   then :
-    echo "\nCreating input.csv in src/data/"
-    touch src/data/input.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/data/input.csv
+    echo "\nCreating input.csv in src/_inputs/csv/"
+    touch src/_inputs/csv/input.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/_inputs/csv/input.csv
 fi
 
-if [ ! -s src/data/to-update.csv ]
+if [ ! -s src/_inputs/csv/to-update.csv ]
   then :
-    echo "\nCreating to-update.csv in src/data/"
-    touch src/data/to-update.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/data/to-update.csv
+    echo "\nCreating to-update.csv in src/_inputs/csv/"
+    touch src/_inputs/csv/to-update.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/_inputs/csv/to-update.csv
 fi
 
-if [ ! -s src/data/duplicates.csv ]
+if [ ! -s src/_inputs/csv/search.csv ]
   then :
-    echo "\nCreating duplicates.csv in src/data/"
-    touch src/data/duplicates.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/data/duplicates.csv
+    echo "\nCreating search.csv in src/_inputs/csv/"
+    touch src/_inputs/csv/search.csv && echo "value_to_search" >> src/_inputs/csv/search.csv
 fi
 
-if [ ! -s src/data/found.csv ]
+# OUTPUTS =================================================================
+
+if [ ! -d src/_outputs ]
   then :
-    echo "\nCreating found.csv in src/data/"
-    touch src/data/found.csv && echo "" >> src/data/found.csv
-fi
-if [ ! -s src/data/not-found.csv ]
-  then :
-    echo "\nCreating not-found.csv in src/data/"
-    touch src/data/not-found.csv && echo "" >> src/data/not-found.csv
+    mkdir src/_outputs
 fi
 
-if [ ! -s src/data/search.csv ]
+if [ ! -d src/_outputs/csv ]
   then :
-    echo "\nCreating search.csv in src/data/"
-    touch src/data/search.csv && echo "value_to_search" >> src/data/search.csv
+    mkdir src/_outputs/csv
 fi
+
+if [ ! -s src/_outputs/csv/found.csv ]
+  then :
+    echo "\nCreating found.csv in src/_outputs/csv/"
+    touch src/_outputs/csv/found.csv && echo "" >> src/_outputs/csv/found.csv
+fi
+if [ ! -s src/_outputs/csv/not-found.csv ]
+  then :
+    echo "\nCreating not-found.csv in src/_outputs/csv/"
+    touch src/_outputs/csv/not-found.csv && echo "" >> src/_outputs/csv/not-found.csv
+fi
+if [ ! -s src/_outputs/csv/duplicates.csv ]
+    then :
+      echo "\nCreating duplicates.csv in src/_outputs/csv/"
+      touch src/_outputs/csv/duplicates.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/_outputs/csv/duplicates.csv
+  fi
