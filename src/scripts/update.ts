@@ -35,7 +35,18 @@ import { buildFolderName } from '../logger/utils';
       );
 
       if (updateObj) {
-        toSave.push({ ...row, ...updateObj });
+        const updateEntries = Object.entries(updateObj);
+
+        const filteredObject: any = {};
+        for (const [key, value] of updateEntries) {
+          if (value !== undefined && value !== '') {
+            filteredObject[key] = value;
+          }
+        }
+
+        console.log({ filteredObject });
+
+        toSave.push({ ...row, ...filteredObject });
       } else {
         toSave.push(row);
       }
