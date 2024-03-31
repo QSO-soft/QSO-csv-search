@@ -44,8 +44,6 @@ import { buildFolderName } from '../logger/utils';
           }
         }
 
-        console.log({ filteredObject });
-
         toSave.push({ ...row, ...filteredObject });
       } else {
         toSave.push(row);

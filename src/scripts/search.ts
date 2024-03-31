@@ -1,11 +1,12 @@
-import uniqBy from 'lodash/uniqBy';
-
 import { SETTINGS } from '../_inputs/settings';
 import { buildCsvPath, convertAndWriteToJSON, convertToCsvAndWrite, DataForCsv, initLocalLogger } from '../helpers';
 import { buildFolderName } from '../logger/utils';
 
 interface Search {
   value_to_search: string;
+}
+interface Duplicate {
+  duplicated_value: string;
 }
 
 (async () => {
@@ -18,8 +19,26 @@ interface Search {
   });
 
   try {
+    const searchField = SETTINGS.fieldToSearch;
+
     logger.info('Starting script...', {
       status: 'in progress',
+    });
+
+    convertToCsvAndWrite({
+      data: [{ [searchField]: '' }],
+      fileName: 'found.csv',
+      outputPath: buildCsvPath(true),
+    });
+    convertToCsvAndWrite({
+      data: [{ field_to_search: '', value_to_search: '' }],
+      fileName: 'not-found.csv',
+      outputPath: buildCsvPath(true),
+    });
+    convertToCsvAndWrite({
+      data: [{ duplicated_value: '' }],
+      fileName: 'duplicates.csv',
+      outputPath: buildCsvPath(true),
     });
 
     const input = await convertAndWriteToJSON({
@@ -30,9 +49,21 @@ interface Search {
       inputPath: buildCsvPath() + 'search.csv',
       logger,
     })) as Search[];
-    const uniqueSearch = uniqBy(search, 'value_to_search');
 
-    const searchField = SETTINGS.fieldToSearch;
+    const duplicates: Duplicate[] = [];
+    const uniqueSearch = search.reduce<Search[]>((acc, row) => {
+      const value = row.value_to_search.toLowerCase();
+
+      const isInAcc = acc.find((row) => row.value_to_search.toLowerCase() === value);
+      if (isInAcc) {
+        duplicates.push({
+          duplicated_value: value,
+        });
+        return acc;
+      } else {
+        return [...acc, row];
+      }
+    }, []);
 
     const foundRes: any[] = [];
     const notFoundRes: any[] = [];
@@ -52,42 +83,35 @@ interface Search {
       }
     }
 
-    const duplicates: any[] = [];
-    const unique = foundRes.reduce<any[]>((acc, row) => {
-      const field = (row[searchField as keyof typeof row] as string).toLowerCase();
+    if (foundRes.length) {
+      convertToCsvAndWrite({
+        data: foundRes as DataForCsv,
+        fileName: 'found.csv',
+        outputPath: buildCsvPath(true),
+      });
 
-      const isInAcc = acc.find((row) => (row[searchField as keyof typeof row] as string).toLowerCase() === field);
-      if (isInAcc) {
-        duplicates.push(row);
-        return acc;
-      } else {
-        return [...acc, row];
-      }
-    }, []);
+      logger.success('Found results saved to src/_outputs/csv/found.csv', { status: 'succeeded' });
+    }
 
-    convertToCsvAndWrite({
-      data: unique as DataForCsv,
-      fileName: 'found.csv',
-      outputPath: buildCsvPath(true),
-    });
+    if (notFoundRes.length) {
+      convertToCsvAndWrite({
+        data: notFoundRes as unknown as DataForCsv,
+        fileName: 'not-found.csv',
+        outputPath: buildCsvPath(true),
+      });
 
-    logger.success('Found results saved to src/_outputs/csv/found.csv', { status: 'succeeded' });
+      logger.success('Not found results saved to src/_outputs/csv/not-found.csv', { status: 'succeeded' });
+    }
 
-    convertToCsvAndWrite({
-      data: notFoundRes as unknown as DataForCsv,
-      fileName: 'not-found.csv',
-      outputPath: buildCsvPath(true),
-    });
+    if (duplicates.length) {
+      convertToCsvAndWrite({
+        data: duplicates as unknown as DataForCsv,
+        fileName: 'duplicates.csv',
+        outputPath: buildCsvPath(true),
+      });
 
-    logger.success('Not found results saved to src/_outputs/csv/not-found.csv', { status: 'succeeded' });
-
-    convertToCsvAndWrite({
-      data: duplicates as DataForCsv,
-      fileName: 'duplicates.csv',
-      outputPath: buildCsvPath(true),
-    });
-
-    logger.success('Duplicated results saved to src/_outputs/csv/duplicates.csv', { status: 'succeeded' });
+      logger.success('Duplicated searches saved to src/_outputs/csv/duplicates.csv', { status: 'succeeded' });
+    }
   } catch (err) {
     logger.error((err as Error).message, {
       status: 'failed',

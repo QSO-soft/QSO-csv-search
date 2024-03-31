@@ -1,3 +1,3 @@
 export const SETTINGS = {
-  fieldToSearch: 'ID',
+  fieldToSearch: 'Scam',
 } as const;

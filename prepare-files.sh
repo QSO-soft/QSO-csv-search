@@ -37,10 +37,10 @@ fi
 if [ ! -s src/_outputs/csv/not-found.csv ]
   then :
     echo "\nCreating not-found.csv in src/_outputs/csv/"
-    touch src/_outputs/csv/not-found.csv && echo "" >> src/_outputs/csv/not-found.csv
+    touch src/_outputs/csv/not-found.csv && echo "field_to_search,value_to_search" >> src/_outputs/csv/not-found.csv
 fi
 if [ ! -s src/_outputs/csv/duplicates.csv ]
     then :
       echo "\nCreating duplicates.csv in src/_outputs/csv/"
-      touch src/_outputs/csv/duplicates.csv && echo "ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,Galxe,Clasters" >> src/_outputs/csv/duplicates.csv
+      touch src/_outputs/csv/duplicates.csv && echo "duplicated_value" >> src/_outputs/csv/duplicates.csv
   fi
