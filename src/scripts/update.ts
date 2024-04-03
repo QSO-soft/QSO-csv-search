@@ -58,26 +58,26 @@ import { buildFolderName } from '../logger/utils';
     const toSave: object[] = [];
     const notFound: object[] = [];
 
-    let restInput = input;
-    for (const row of uniqueToUpdate) {
+    let restToUpdate = uniqueToUpdate;
+    for (const row of input) {
       const searchValue = ((row[searchField as keyof typeof row] as string) || '')?.toLowerCase();
 
-      const updatedRestInput = [];
-      let foundInput: object | null = null;
+      const updatedRestToUpdate = [];
+      let foundUpdate: object | null = null;
 
-      for (const inputRow of restInput) {
-        const inputRowValue = ((inputRow[searchField as keyof typeof inputRow] as string) || '')?.toLowerCase();
+      for (const updateRow of restToUpdate) {
+        const updateValue = ((updateRow[searchField as keyof typeof updateRow] as string) || '')?.toLowerCase();
 
-        if (inputRowValue === searchValue) {
-          foundInput = inputRow;
+        if (updateValue === searchValue) {
+          foundUpdate = updateRow;
         } else {
-          updatedRestInput.push(inputRow);
+          updatedRestToUpdate.push(updateRow);
         }
       }
-      restInput = updatedRestInput;
+      restToUpdate = updatedRestToUpdate;
 
-      if (foundInput) {
-        const updateEntries = Object.entries(row);
+      if (foundUpdate) {
+        const updateEntries = Object.entries(foundUpdate);
 
         const filteredObject: any = {};
         for (const [key, value] of updateEntries) {
@@ -86,12 +86,12 @@ import { buildFolderName } from '../logger/utils';
           }
         }
 
-        toSave.push({ ...foundInput, ...filteredObject });
+        toSave.push({ ...row, ...filteredObject });
       } else {
-        notFound.push(row);
+        toSave.push(row);
       }
     }
-    toSave.push(...restInput);
+    notFound.push(...restToUpdate);
 
     convertToCsvAndWrite({
       data: toSave as DataForCsv,
