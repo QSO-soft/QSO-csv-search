@@ -40,7 +40,8 @@ if [ ! -s src/_outputs/csv/not-found.csv ]
     touch src/_outputs/csv/not-found.csv && echo "field_to_search,value_to_search" >> src/_outputs/csv/not-found.csv
 fi
 if [ ! -s src/_outputs/csv/duplicates.csv ]
-    then :
-      echo "\nCreating duplicates.csv in src/_outputs/csv/"
-      touch src/_outputs/csv/duplicates.csv && echo "duplicated_value" >> src/_outputs/csv/duplicates.csv
-  fi
+  then :
+    echo "\nCreating duplicates.csv in src/_outputs/csv/"
+    touch src/_outputs/csv/duplicates.csv && echo "duplicated_value" >> src/_outputs/csv/duplicates.csv
+fi
+

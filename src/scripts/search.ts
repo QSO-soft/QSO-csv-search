@@ -1,13 +1,15 @@
 import { SETTINGS } from '../_inputs/settings';
-import { buildCsvPath, convertAndWriteToJSON, convertToCsvAndWrite, DataForCsv, initLocalLogger } from '../helpers';
+import {
+  buildCsvPath,
+  clearData,
+  convertAndWriteToJSON,
+  convertToCsvAndWrite,
+  DataForCsv,
+  initLocalLogger,
+} from '../helpers';
+import { filterData } from '../helpers/filter-data';
 import { buildFolderName } from '../logger/utils';
-
-interface Search {
-  value_to_search: string;
-}
-interface Duplicate {
-  duplicated_value: string;
-}
+import { Duplicate, Search } from '../types';
 
 (async () => {
   const projectName = 'search';
@@ -25,21 +27,7 @@ interface Duplicate {
       status: 'in progress',
     });
 
-    convertToCsvAndWrite({
-      data: [{ [searchField]: '' }],
-      fileName: 'found.csv',
-      outputPath: buildCsvPath(true),
-    });
-    convertToCsvAndWrite({
-      data: [{ field_to_search: '', value_to_search: '' }],
-      fileName: 'not-found.csv',
-      outputPath: buildCsvPath(true),
-    });
-    convertToCsvAndWrite({
-      data: [{ duplicated_value: '' }],
-      fileName: 'duplicates.csv',
-      outputPath: buildCsvPath(true),
-    });
+    clearData(logger);
 
     const input = await convertAndWriteToJSON({
       inputPath: buildCsvPath() + 'input.csv',
@@ -65,22 +53,50 @@ interface Duplicate {
       }
     }, []);
 
-    const foundRes: any[] = [];
-    const notFoundRes: any[] = [];
+    let foundRes: object[] = [];
+    const notFoundRes: object[] = [];
 
-    for (const { value_to_search } of uniqueSearch) {
-      const foundInputs = input.filter(
-        (row) => (row[searchField as keyof typeof row] as string)?.toLowerCase() === value_to_search.toLowerCase()
-      );
+    if (SETTINGS.filters.useFilter) {
+      const { foundData, notFoundData } = filterData({ input });
+      foundRes.push(...foundData);
+      notFoundRes.push(...notFoundData);
+    } else {
+      for (const { value_to_search } of uniqueSearch) {
+        const foundInputs = input.filter(
+          (row) => (row[searchField as keyof typeof row] as string)?.toLowerCase() === value_to_search.toLowerCase()
+        );
 
-      if (foundInputs.length) {
-        foundRes.push(...foundInputs);
-      } else {
-        notFoundRes.push({
-          field_to_search: searchField,
-          value_to_search,
-        });
+        if (foundInputs.length) {
+          foundRes.push(...foundInputs);
+        } else {
+          notFoundRes.push({
+            field_to_search: searchField,
+            value_to_search,
+          });
+        }
       }
+    }
+
+    const fieldsToReceive = SETTINGS.fieldsToReceive;
+    if (fieldsToReceive.length) {
+      foundRes = foundRes.map((data) => {
+        let updatedData = {};
+
+        [searchField, ...fieldsToReceive].forEach((field) => {
+          if (!(field in data)) {
+            updatedData = {
+              ...updatedData,
+              [field]: '',
+            };
+          } else {
+            updatedData = {
+              ...updatedData,
+              [field]: data[field as keyof typeof data],
+            };
+          }
+        });
+        return updatedData;
+      });
     }
 
     if (foundRes.length) {
@@ -112,9 +128,12 @@ interface Duplicate {
 
       logger.success('Duplicated searches saved to src/_outputs/csv/duplicates.csv', { status: 'succeeded' });
     }
+
+    process.exit(0);
   } catch (err) {
     logger.error((err as Error).message, {
       status: 'failed',
     });
+    process.exit(1);
   }
 })();
