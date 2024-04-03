@@ -86,7 +86,7 @@ import { buildFolderName } from '../logger/utils';
           }
         }
 
-        toSave.push({ ...row, ...filteredObject });
+        toSave.push({ ...foundInput, ...filteredObject });
       } else {
         notFound.push(row);
       }
