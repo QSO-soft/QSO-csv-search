@@ -4,6 +4,9 @@ export interface Settings {
   fieldsToReceive: string[];
 
   filters: { useFilter: boolean } & Record<string, Filter>;
+
+  sortBy: string;
+  sortOrder: 'ASC' | 'DESC';
 }
 
 export type MoreOrLessString = `>${number}` | `<${number}`;

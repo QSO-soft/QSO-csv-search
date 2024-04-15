@@ -1,3 +1,5 @@
+import sortBy from 'lodash/sortBy';
+
 import { SETTINGS } from '../_inputs/settings';
 import {
   buildCsvPath,
@@ -38,11 +40,11 @@ import { Duplicate, Search } from '../types';
       logger,
     })) as Search[];
 
-    const duplicates: Duplicate[] = [];
+    let duplicates: Duplicate[] = [];
     const uniqueSearch = search.reduce<Search[]>((acc, row) => {
-      const value = row.value_to_search.toLowerCase();
+      const value = row.value_to_search;
 
-      const isInAcc = acc.find((row) => row.value_to_search.toLowerCase() === value);
+      const isInAcc = acc.find((row) => row.value_to_search.toLowerCase() === value.toLowerCase());
       if (isInAcc) {
         duplicates.push({
           duplicated_value: value,
@@ -54,9 +56,10 @@ import { Duplicate, Search } from '../types';
     }, []);
 
     let foundRes: object[] = [];
-    const notFoundRes: object[] = [];
+    let notFoundRes: object[] = [];
 
-    if (SETTINGS.filters.useFilter) {
+    const { useFilter } = SETTINGS.filters;
+    if (useFilter) {
       const { foundData, notFoundData } = filterData({ input });
       foundRes.push(...foundData);
       notFoundRes.push(...notFoundData);
@@ -74,6 +77,17 @@ import { Duplicate, Search } from '../types';
             value_to_search,
           });
         }
+      }
+    }
+
+    const sortByField = SETTINGS.sortBy;
+    const isDescSort = SETTINGS.sortOrder === 'DESC';
+
+    if (sortByField) {
+      foundRes = sortBy(foundRes, [sortByField]);
+
+      if (isDescSort) {
+        foundRes = foundRes.reverse();
       }
     }
 
@@ -110,6 +124,18 @@ import { Duplicate, Search } from '../types';
     }
 
     if (notFoundRes.length) {
+      if (sortByField && sortByField === searchField) {
+        if (useFilter) {
+          notFoundRes = sortBy(notFoundRes, [sortByField]);
+        } else {
+          notFoundRes = sortBy(notFoundRes, ['value_to_search']);
+        }
+
+        if (isDescSort) {
+          notFoundRes = notFoundRes.reverse();
+        }
+      }
+
       convertToCsvAndWrite({
         data: notFoundRes as unknown as DataForCsv,
         fileName: 'not-found.csv',
@@ -120,6 +146,14 @@ import { Duplicate, Search } from '../types';
     }
 
     if (duplicates.length) {
+      if (sortByField && sortByField === searchField) {
+        duplicates = sortBy(duplicates, ['duplicated_value']);
+
+        if (isDescSort) {
+          duplicates = duplicates.reverse();
+        }
+      }
+
       convertToCsvAndWrite({
         data: duplicates as unknown as DataForCsv,
         fileName: 'duplicates.csv',
