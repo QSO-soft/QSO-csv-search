@@ -20,8 +20,11 @@ export const filterData = ({ input }: FilterData) => {
         continue;
       }
 
-      const isMoreOrLessFilter =
-        typeof filterValue === 'string' && (filterValue.startsWith('>') || filterValue.startsWith('<'));
+      const isString = typeof filterValue === 'string';
+      const isMoreOrLessFilter = isString && (filterValue.startsWith('>') || filterValue.startsWith('<'));
+      const isIncludesFilter = isString && filterValue.startsWith('in=');
+      const isNotEmptyFilter = isString && filterValue.startsWith('!null');
+
       if (isMoreOrLessFilter) {
         const value = data[filterKey as keyof typeof data];
         const isNotNumberValue = isNaN(+value);
@@ -44,6 +47,13 @@ export const filterData = ({ input }: FilterData) => {
           isOkayFilters.push(isOkay);
           continue;
         }
+      } else if (isIncludesFilter) {
+        const searchPart = filterValue.split('in=')?.[1];
+        const isOkay = ((data[filterKey as keyof typeof data] as string) || '').includes(`${searchPart}`);
+        isOkayFilters.push(isOkay);
+      } else if (isNotEmptyFilter) {
+        const isOkay = !!data[filterKey as keyof typeof data];
+        isOkayFilters.push(isOkay);
       } else if (filterValue === null) {
         const isOkay = data[filterKey as keyof typeof data] === '';
         isOkayFilters.push(isOkay);

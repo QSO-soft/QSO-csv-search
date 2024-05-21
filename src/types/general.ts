@@ -10,7 +10,10 @@ export interface Settings {
 }
 
 export type MoreOrLessString = `>${number}` | `<${number}`;
-export type Filter = string | MoreOrLessString | boolean | number | null;
+export type IncludesString = `in=${string}`;
+export type NotEmptyString = '!null';
+
+export type Filter = string | MoreOrLessString | IncludesString | NotEmptyString | boolean | number | null;
 export interface Search {
   value_to_search: string;
 }

@@ -26,7 +26,19 @@ export const convertAndWriteToJSON = async ({ inputPath, outputPath, logger, wit
     .fromFile(inputPath)
     .subscribe(
       (jsonObj: object) => {
-        jsonArray.push(jsonObj);
+        const resObj: any = {};
+
+        for (const [key, value] of Object.entries(jsonObj)) {
+          const replaced = value.replace(',', '.');
+
+          if (isNaN(+replaced)) {
+            resObj[key] = value;
+          } else {
+            resObj[key] = replaced;
+          }
+        }
+
+        jsonArray.push(resObj);
       },
       (error) => {
         if (error) {
@@ -97,13 +109,28 @@ export const convertToCSV = (data: DataForCsv, columnDelimiter = ',', lineDelimi
     let ctr = 0;
 
     const item = data[i];
+
     for (let j = 0; j < headers.length; j++) {
       const header = headers[j];
       if (ctr > 0) {
         csvString += columnDelimiter;
       }
 
-      csvString += item && header && item[header] !== undefined ? item[header] : '';
+      const isItem = item && header && item[header] !== undefined;
+      if (isItem) {
+        const currentItem = `${item[header]}`;
+
+        if (currentItem.includes(',')) {
+          const replaced = currentItem.replaceAll(',', '.');
+          if (isNaN(+replaced)) {
+            csvString += `"${currentItem}"`;
+          } else {
+            csvString += currentItem.replaceAll(',', '.');
+          }
+        } else {
+          csvString += currentItem;
+        }
+      }
 
       ctr++;
     }
