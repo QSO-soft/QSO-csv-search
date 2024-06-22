@@ -16,4 +16,5 @@ xlsx
 
 src/_inputs/**/*[!.example].csv
 src/_inputs/**/to-update.csv
+src/_inputs/**/evm.csv
 src/_outputs/**/*[!.example].csv

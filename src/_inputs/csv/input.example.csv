@@ -1,3 +1,3 @@
-ID,Wallet Address,Priv Key,Mnemonic,OKX Wallet,Binance Wallet,Pontem Wallet,Pontem Priv Key,Scam,Linea,Scroll,Zora,etc...
+ID,evm_address,evm_priv_key,evm_mnemonic,okx_evm,binance_evm,bitget_evm,bybit_evm,aptos_address,aptos_priv_key,okx_aptos,solana_address,solana_priv_key,is_scam,ads_serial_number,ads_pass
 1,,,,,,,,,,,
 2,,,,,,,,,,,
