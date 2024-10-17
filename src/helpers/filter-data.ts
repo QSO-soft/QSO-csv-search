@@ -23,6 +23,7 @@ export const filterData = ({ input }: FilterData) => {
       const isString = typeof filterValue === 'string';
       const isMoreOrLessFilter = isString && (filterValue.startsWith('>') || filterValue.startsWith('<'));
       const isIncludesFilter = isString && filterValue.startsWith('in=');
+      const isNotIncludesFilter = isString && filterValue.startsWith('!in=');
       const isNotEmptyFilter = isString && filterValue.startsWith('!null');
 
       if (isMoreOrLessFilter) {
@@ -50,6 +51,10 @@ export const filterData = ({ input }: FilterData) => {
       } else if (isIncludesFilter) {
         const searchPart = filterValue.split('in=')?.[1];
         const isOkay = ((data[filterKey as keyof typeof data] as string) || '').includes(`${searchPart}`);
+        isOkayFilters.push(isOkay);
+      }else if (isNotIncludesFilter) {
+        const searchPart = filterValue.split('!in=')?.[1];
+        const isOkay = !((data[filterKey as keyof typeof data] as string) || '').includes(`${searchPart}`);
         isOkayFilters.push(isOkay);
       } else if (isNotEmptyFilter) {
         const isOkay = !!data[filterKey as keyof typeof data];

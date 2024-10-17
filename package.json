@@ -4,8 +4,7 @@
   "description": "",
   "type": "module",
   "engines": {
-    "node": "20.8.1",
-    "npm": "10.1.0"
+    "node": "=20"
   },
   "scripts": {
     "==================== MAIN": "====================",
@@ -21,24 +20,31 @@
     "lint": "eslint 'src/**/*'",
     "lint:fix": "eslint 'src/**/*' --fix",
     "==================== SCRIPTS": "====================",
-    "search": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/scripts/search.ts",
-    "update": "node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm src/scripts/update.ts"
+    "search": "tsx src/scripts/search.ts",
+    "update": "tsx src/scripts/update.ts",
+    "encrypt": "tsx src/scripts/encrypt.ts",
+    "decrypt": "tsx src/scripts/decrypt.ts"
   },
   "author": "QSO-soft",
   "license": "ISC",
   "dependencies": {
     "axios": "1.6.7",
+    "crypto-js": "^4.2.0",
     "csvtojson": "2.0.10",
     "dayjs": "1.11.10",
     "inquirer": "^9.2.17",
     "lodash": "^4.17.21",
     "ts-node": "10.9.1",
+    "tsx": "^4.19.1",
     "typescript": "5.2.2",
-    "winston": "3.10.0"
+    "winston": "3.10.0",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.14.202",
     "@types/node": "18.17.1",
+    "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "6.3.0",
     "@typescript-eslint/parser": "6.2.1",
     "eslint": "8.46.0",

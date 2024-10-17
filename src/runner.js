@@ -6,10 +6,14 @@ import inquirer from 'inquirer';
 const scripts = {
   search: 'search',
   update: 'update',
+  encrypt: 'encrypt',
+  decrypt: 'decrypt',
 };
 const aliases = {
   runSearch: '1. Поиск в input.csv',
   runUpdate: '2. Обновление inputs.csv значениями из to-update.csv',
+  runEncrypt: '3. Закодировать decrypted.txt',
+  runDecrypt: '2. Декодировать encrypted.txt',
 
   exit: '0. Выйти',
 };
@@ -17,15 +21,40 @@ const aliases = {
 const commandAliases = {
   [aliases.runSearch]: scripts.search,
   [aliases.runUpdate]: scripts.update,
+  [aliases.runEncrypt]: scripts.encrypt,
+  [aliases.runDecrypt]: scripts.decrypt,
 
   [aliases.exit]: 'exit',
+};
+
+const getSecretPhrase = async () => {
+  const input = {
+    type: 'input',
+    name: 'secret',
+    message: 'Введите секретную фразу для кодирования:',
+    validate: (input) => {
+      if (input.trim() === '') {
+        return 'Secret cannot be empty';
+      }
+      return true;
+    },
+  };
+
+  const { secret } = await inquirer.prompt(input);
+
+  return secret;
 };
 
 const getStartMainCommand = async (projectName) => {
   const runMainCommand = `npm run ${projectName}`;
 
+  let secret = '';
+  if (projectName === 'encrypt' || projectName === 'decrypt') {
+    secret = await getSecretPhrase();
+  }
   return {
     command: runMainCommand,
+    secret,
   };
 };
 
@@ -48,13 +77,31 @@ const getStartMainCommand = async (projectName) => {
 
   switch (selectedAlias) {
     case aliases.runSearch: {
-      const { command } = await getStartMainCommand(scripts.search);
+      const { command, secret } = await getStartMainCommand(scripts.search);
       selectedCommand = command;
+      args = [secret];
+
       break;
     }
     case aliases.runUpdate: {
-      const { command } = await getStartMainCommand(scripts.update);
+      const { command, secret } = await getStartMainCommand(scripts.update);
       selectedCommand = command;
+      args = [secret];
+
+      break;
+    }
+    case aliases.runEncrypt: {
+      const { command, secret } = await getStartMainCommand(scripts.encrypt);
+      selectedCommand = command;
+      args = [secret];
+
+      break;
+    }
+    case aliases.runDecrypt: {
+      const { command, secret } = await getStartMainCommand(scripts.decrypt);
+      selectedCommand = command;
+      args = [secret];
+
       break;
     }
 
@@ -80,12 +127,13 @@ const getStartMainCommand = async (projectName) => {
       if (errMessage.includes('triggerUncaughtException')) {
         errMessage =
           'Unknown error occurred: please, call "tsc" command to see the problem or compare global.js with global.example.js';
-      } else {
-        errMessage = errMessage
-          .split('\n')
-          .filter((string) => !!string)
-          .at(-1);
       }
+      // else {
+      //   errMessage = errMessage
+      //     .split('\n')
+      //     .filter((string) => !!string)
+      //     .at(-1);
+      // }
 
       process.stderr.write(
         `\x1b[31m${errMessage}\x1b[0m

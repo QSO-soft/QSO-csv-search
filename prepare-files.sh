@@ -45,3 +45,22 @@ if [ ! -s src/_outputs/csv/duplicates.csv ]
     touch src/_outputs/csv/duplicates.csv && echo "duplicated_value" >> src/_outputs/csv/duplicates.csv
 fi
 
+# ENCRYPTION =================================================================
+if [ ! -d src/_inputs/txt ]
+  then :
+    mkdir src/_inputs/txt
+fi
+if [ ! -d src/_outputs/txt ]
+  then :
+    mkdir src/_outputs/txt
+fi
+if [ ! -s src/_inputs/txt/encrypted.txt ]
+  then :
+    echo "\nCreating encrypted.txt in src/_inputs/txt/"
+    touch src/_inputs/txt/encrypted.txt
+fi
+if [ ! -s src/_inputs/txt/decrypted.txt ]
+  then :
+    echo "\nCreating decrypted.txt in src/_inputs/txt/"
+    touch src/_inputs/txt/decrypted.txt
+fi
