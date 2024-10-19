@@ -7,6 +7,8 @@ export interface Settings {
 
   sortBy: string;
   sortOrder: 'ASC' | 'DESC';
+
+  testProxyUrl: string;
 }
 
 export type MoreOrLessString = `>${number}` | `<${number}`;

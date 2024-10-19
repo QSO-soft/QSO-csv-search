@@ -8,12 +8,14 @@ const scripts = {
   update: 'update',
   encrypt: 'encrypt',
   decrypt: 'decrypt',
+  testProxy: 'test-proxy',
 };
 const aliases = {
   runSearch: '1. Поиск в input.csv',
   runUpdate: '2. Обновление inputs.csv значениями из to-update.csv',
   runEncrypt: '3. Закодировать decrypted.txt',
-  runDecrypt: '2. Декодировать encrypted.txt',
+  runDecrypt: '4. Декодировать encrypted.txt',
+  runTestProxy: '5. Проверить прокси proxies.csv',
 
   exit: '0. Выйти',
 };
@@ -23,6 +25,7 @@ const commandAliases = {
   [aliases.runUpdate]: scripts.update,
   [aliases.runEncrypt]: scripts.encrypt,
   [aliases.runDecrypt]: scripts.decrypt,
+  [aliases.runTestProxy]: scripts.testProxy,
 
   [aliases.exit]: 'exit',
 };
@@ -99,6 +102,13 @@ const getStartMainCommand = async (projectName) => {
     }
     case aliases.runDecrypt: {
       const { command, secret } = await getStartMainCommand(scripts.decrypt);
+      selectedCommand = command;
+      args = [secret];
+
+      break;
+    }
+    case aliases.runTestProxy: {
+      const { command, secret } = await getStartMainCommand(scripts.testProxy);
       selectedCommand = command;
       args = [secret];
 

@@ -17,6 +17,12 @@ if [ ! -s src/_inputs/csv/search.csv ]
     touch src/_inputs/csv/search.csv && echo "value_to_search" >> src/_inputs/csv/search.csv
 fi
 
+if [ ! -s src/_inputs/csv/proxies.csv ]
+  then :
+    echo "\nCreating proxies.csv in src/_inputs/csv/"
+    touch src/_inputs/csv/proxies.csv && echo "proxy" >> src/_inputs/csv/proxies.csv
+fi
+
 # OUTPUTS =================================================================
 
 if [ ! -d src/_outputs ]
@@ -43,6 +49,17 @@ if [ ! -s src/_outputs/csv/duplicates.csv ]
   then :
     echo "\nCreating duplicates.csv in src/_outputs/csv/"
     touch src/_outputs/csv/duplicates.csv && echo "duplicated_value" >> src/_outputs/csv/duplicates.csv
+fi
+
+if [ ! -s src/_outputs/csv/proxies-success.csv ]
+  then :
+    echo "\nCreating proxies-success.csv in src/_outputs/csv/"
+    touch src/_outputs/csv/proxies-success.csv && echo "proxy" >> src/_outputs/csv/proxies-success.csv
+fi
+if [ ! -s src/_outputs/csv/proxies-fail.csv ]
+  then :
+    echo "\nCreating proxies-fail.csv in src/_outputs/csv/"
+    touch src/_outputs/csv/proxies-fail.csv && echo "proxy" >> src/_outputs/csv/proxies-fail.csv
 fi
 
 # ENCRYPTION =================================================================
