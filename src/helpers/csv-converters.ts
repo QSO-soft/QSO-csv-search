@@ -29,13 +29,13 @@ export const convertAndWriteToJSON = async ({ inputPath, outputPath, logger, wit
         const resObj: any = {};
 
         for (const [key, value] of Object.entries(jsonObj)) {
-          const replaced = value.replace(',', '.');
+          // const replaced = value.replace(',', '.');
 
-          if (isNaN(+replaced)) {
-            resObj[key] = value;
-          } else {
-            resObj[key] = replaced;
-          }
+          // if (isNaN(+replaced)) {
+          resObj[key] = value;
+          // } else {
+          // resObj[key] = replaced;
+          // }
         }
 
         jsonArray.push(resObj);
