@@ -24,8 +24,9 @@
     "update": "tsx src/scripts/update.ts",
     "encrypt": "tsx src/scripts/encrypt.ts",
     "decrypt": "tsx src/scripts/decrypt.ts",
-    "test-proxy": "tsx src/scripts/test-proxy.ts"
-
+    "test-proxy": "tsx src/scripts/test-proxy.ts",
+    "bas-encode": "tsx src/scripts/bas-encode.ts",
+    "bas-decode": "tsx src/scripts/bas-decode.ts"
   },
   "author": "QSO-soft",
   "license": "ISC",

@@ -9,6 +9,8 @@ const scripts = {
   encrypt: 'encrypt',
   decrypt: 'decrypt',
   testProxy: 'test-proxy',
+  basEncrypt: 'bas-encode',
+  basDecrypt: 'bas-decode',
 };
 const aliases = {
   runSearch: '1. Поиск в input.csv',
@@ -16,6 +18,8 @@ const aliases = {
   runEncrypt: '3. Закодировать decrypted.txt',
   runDecrypt: '4. Декодировать encrypted.txt',
   runTestProxy: '5. Проверить прокси proxies.csv',
+  runBasEncrypt: '6. Закодировать decrypted.txt для BAS',
+  runBasDecrypt: '7. Декодировать encrypted.txt для BAS',
 
   exit: '0. Выйти',
 };
@@ -26,6 +30,8 @@ const commandAliases = {
   [aliases.runEncrypt]: scripts.encrypt,
   [aliases.runDecrypt]: scripts.decrypt,
   [aliases.runTestProxy]: scripts.testProxy,
+  [aliases.runBasEncrypt]: scripts.basEncrypt,
+  [aliases.runBasDecrypt]: scripts.basDecrypt,
 
   [aliases.exit]: 'exit',
 };
@@ -52,7 +58,7 @@ const getStartMainCommand = async (projectName) => {
   const runMainCommand = `npm run ${projectName}`;
 
   let secret = '';
-  if (projectName === 'encrypt' || projectName === 'decrypt') {
+  if (['encrypt', 'decrypt', 'bas-encode', 'bas-decode'].includes(projectName)) {
     secret = await getSecretPhrase();
   }
   return {
@@ -109,6 +115,20 @@ const getStartMainCommand = async (projectName) => {
     }
     case aliases.runTestProxy: {
       const { command, secret } = await getStartMainCommand(scripts.testProxy);
+      selectedCommand = command;
+      args = [secret];
+
+      break;
+    }
+    case aliases.runBasEncrypt: {
+      const { command, secret } = await getStartMainCommand(scripts.basEncrypt);
+      selectedCommand = command;
+      args = [secret];
+
+      break;
+    }
+    case aliases.runBasDecrypt: {
+      const { command, secret } = await getStartMainCommand(scripts.basDecrypt);
       selectedCommand = command;
       args = [secret];
 
