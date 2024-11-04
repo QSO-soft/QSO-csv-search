@@ -40,7 +40,7 @@
     "lodash": "^4.17.21",
     "socks-proxy-agent": "^8.0.4",
     "ts-node": "10.9.1",
-    "tsx": "^4.19.1",
+    "tsx": "^4.19.2",
     "typescript": "5.2.2",
     "winston": "3.10.0",
     "yargs": "^17.7.2"
