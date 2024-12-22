@@ -134,7 +134,7 @@ const outputFilePath = path.join(outputFolder, 'encryption-res.txt');
 const mnemonics = readFileSync(inputFilePath, 'utf8');
 
 const resArr = [];
-for (const mnemonic of mnemonics.split('\n')) {
+for (const mnemonic of mnemonics.includes('\r\n') ? mnemonics.split('\r\n') : mnemonics.split('\n')) {
   if (mnemonic) {
     const encoded = encodeMnemonic(mnemonic);
 
@@ -142,4 +142,4 @@ for (const mnemonic of mnemonics.split('\n')) {
   }
 }
 
-writeFileSync(outputFilePath, resArr.join('\n'));
+writeFileSync(outputFilePath, resArr.join('\r\n'), 'utf8');

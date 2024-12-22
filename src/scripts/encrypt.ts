@@ -21,11 +21,14 @@ export const processDecryptedFile = (inputFile: string, outputFile: string) => {
 
   logger.info(`Encrypting keys from ${inputFilePath}...`);
 
-  const decryptedKeys = fs.readFileSync(inputFilePath, 'utf-8').split('\n');
+  const decryptedKeys = fs.readFileSync(inputFilePath, 'utf-8');
+  const splittedDecryptedKeys = decryptedKeys.includes('\r\n')
+    ? decryptedKeys.split('\r\n')
+    : decryptedKeys.split('\n');
 
-  const encryptedKeys = encryptKeys(decryptedKeys, logger);
+  const encryptedKeys = encryptKeys(splittedDecryptedKeys, logger);
 
-  fs.writeFileSync(outputFilePath, encryptedKeys.join('\n'));
+  fs.writeFileSync(outputFilePath, encryptedKeys.join('\r\n'), 'utf8');
   logger.success(`Encrypted keys saved to ${outputFilePath}`);
 };
 
