@@ -142,4 +142,4 @@ for (const mnemonic of mnemonics.includes('\r\n') ? mnemonics.split('\r\n') : mn
   }
 }
 
-writeFileSync(outputFilePath, resArr.join('\r\n'), 'utf8');
+writeFileSync(outputFilePath, resArr.join('\n'), 'utf8');
