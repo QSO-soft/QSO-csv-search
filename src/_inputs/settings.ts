@@ -14,6 +14,9 @@ export const SETTINGS: Settings = {
     // Использовать ли вместо search.csv фильтра
     useFilter: false,
 
+    // Будет просто искать уникальные значения, если стоит true
+    uniqueFields: false,
+
     // Фильтра по любым столбцам
     // Примеры:
     // 'Wallet Address': '0x1' - найдет те поля, где значение 0x1

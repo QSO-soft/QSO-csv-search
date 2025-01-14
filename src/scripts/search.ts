@@ -1,4 +1,5 @@
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 import { SETTINGS } from '../_inputs/settings';
 import {
@@ -40,6 +41,21 @@ import { Duplicate, Search } from '../types';
       logger,
     })) as Search[];
 
+    if (SETTINGS.filters.useFilter && SETTINGS.filters.uniqueFields) {
+      const uniqueInputs = uniqBy(input, searchField);
+
+      if (uniqueInputs.length) {
+        convertToCsvAndWrite({
+          data: uniqueInputs as DataForCsv,
+          fileName: 'found.csv',
+          outputPath: buildCsvPath(true),
+        });
+
+        logger.success('Found results saved to src/_outputs/csv/found.csv', { status: 'succeeded' });
+      }
+
+      process.exit(0);
+    }
     let duplicates: Duplicate[] = [];
     const uniqueSearch = search.reduce<Search[]>((acc, row) => {
       const value = row.value_to_search;
